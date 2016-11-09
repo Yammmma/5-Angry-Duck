@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  Angry Duck - 2
 //
-//  Created by Yuma Soerianto on 7/11/16.
-//  Copyright © 2016 Yuma Soerianto. All rights reserved.
+//  Created by yuma@duck on 7/11/16.
+//  Copyright © 2016 yuma@duck. All rights reserved.
 //
 
 import UIKit
