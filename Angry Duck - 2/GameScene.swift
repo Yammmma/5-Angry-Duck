@@ -6,6 +6,8 @@
 //  Copyright © 2016 yuma@duck. All rights reserved.
 //
 
+// UPDATE: Boxes now reset. You can see how I did it by looking at the comments below
+
 import SpriteKit
 import GameplayKit
 
@@ -15,12 +17,26 @@ class GameScene: SKScene {
     var originalDuckPos: CGPoint!
     var hasGone = false
     
+    // 1: set 2 arrays for the boxes and box original positions
+    
+    var boxes = [SKSpriteNode]()
+    var boxOriginalPositions = [CGPoint]()
+    
     override func didMove(to view: SKView) {
         duck = childNode(withName: "duck") as! SKSpriteNode
         
         originalDuckPos = duck.position
         
         physicsBody = SKPhysicsBody(edgeLoopFrom: frame)
+        
+        // 2: get all boxes and its positions
+        
+        for i in 1...8 {
+            if let box = childNode(withName: "box\(i)") as? SKSpriteNode {
+                boxes.append(box)
+                boxOriginalPositions.append(box.position)
+            }
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -89,8 +105,8 @@ class GameScene: SKScene {
     }
     
     override func update(_ currentTime: TimeInterval) {
-        if let duckVelocity = duck.physicsBody?.velocity, let duckAngleVlcity = duck.physicsBody?.angularVelocity {
-            if duckVelocity.dx <= 0 && duckVelocity.dy <= 0 && duckAngleVlcity <= 0 && hasGone {
+        if let duckPhysicsBody = duck.physicsBody {
+            if duckPhysicsBody.velocity.dx <= 0.1 && duckPhysicsBody.velocity.dy <= 0.1 && duckPhysicsBody.angularVelocity <= 0.1 && hasGone {
                 duck.physicsBody?.affectedByGravity = false
                 duck.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
                 duck.physicsBody?.angularVelocity = 0
@@ -98,6 +114,18 @@ class GameScene: SKScene {
                 duck.position = originalDuckPos
                 
                 hasGone = false
+                
+                // 3: When you reset, loop through the boxes and set them to its original position, rotation and velocity
+                
+                for i in 0...7 { // Remember: Array indexes start from 0
+                    let originalPos = boxOriginalPositions[i]
+                    let box = boxes[i]
+                    
+                    box.position = originalPos
+                    box.zRotation = 0.0
+                    box.physicsBody?.velocity = CGVector.zero
+                    box.physicsBody?.angularVelocity = 0.0
+                }
             }
         }
     }
