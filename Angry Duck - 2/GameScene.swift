@@ -68,7 +68,12 @@ class GameScene: SKScene {
                     for node in touchedWhere {
                         if let sprite = node as? SKSpriteNode {
                             if sprite == duck {
-                                duck.position = touchLocation
+                                // MARK: Made duck snap back to its original position when it has been dragged further than the mid-X point to prevent the user from cheating (and dragging the duck around so it hits the boxes)!
+                                if duck.position.x > 0.0 {
+                                    duck.position = originalDuckPos
+                                } else {
+                                    duck.position = touchLocation
+                                }
                             }
                         }
                     }
